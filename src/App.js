@@ -31,14 +31,16 @@ const App = (props) => {
       setLoading(true);
 
       console.log('selectedFile: ', selectedFile);
+      // GET Upload Url By File Content Type
       const uploadDetailsRes = await axios({
         method: 'post',
         url: `${apiHost}/uploads`,
         data: { contentType: selectedFile.type },
       });
-      setUploadedImgPreviewUrl(`${filesHost}/${uploadDetailsRes.data.filePath}`);
-      // setFeedbackMsg(uploadDetailsRes.data);
 
+      setUploadedImgPreviewUrl(`${filesHost}/${uploadDetailsRes.data.filePath}`);
+
+      // Generate FormData From The uploadDetailsRes
       const formData = new FormData();
       Object.entries(uploadDetailsRes.data.fields).forEach(([k, v]) => {
         formData.append(k, v);
@@ -54,6 +56,8 @@ const App = (props) => {
       setFeedbackMsg(uploadRes.data);
 
       if (uploadRes.status === 204) {
+        // If the file is uploaded successfully, use filePath Attribute as the value for image attribute
+
         const randomNo = 10000 + Math.floor((Math.random() * 9999))
         const registerRes = await axios({
           method: 'post',
